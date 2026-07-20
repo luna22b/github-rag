@@ -1,5 +1,5 @@
-
 @import "tailwindcss";
+@import "@fontsource/inter/500.css";
 
 * {
   box-sizing: border-box;
@@ -13,5 +13,6 @@ body,
 
 body {
   margin: 0;
+  background-color: oklch(0.145 0.005 285);
+  font-family: Inter;
 }
-
