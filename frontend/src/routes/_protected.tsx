@@ -4,7 +4,7 @@ import axios from "axios";
 export const Route = createFileRoute("/_protected")({
   beforeLoad: async () => {
     try {
-      const response = await axios.get("http://localhost:8000/api/me", {
+      const response = await axios.get("http://localhost:8000/api/auth/me", {
         withCredentials: true,
       });
 
