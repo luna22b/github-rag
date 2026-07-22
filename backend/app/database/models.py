@@ -1,4 +1,4 @@
-from sqlalchemy import String
+from sqlalchemy import String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database.database import Base
@@ -25,7 +25,23 @@ class User(Base):
         index=True,
     )
 
-    hashed_password: Mapped[str] = mapped_column(
+    hashed_password: Mapped[str | None] = mapped_column(
         String(255),
-        nullable=False,
+        nullable=True,
+    )
+
+    github_id: Mapped[str | None] = mapped_column(
+        String,
+        unique=True,
+        nullable=True,
+    )
+
+    github_username: Mapped[str | None] = mapped_column(
+        String,
+        nullable=True,
+    )
+
+    github_access_token: Mapped[str | None] = mapped_column(
+        Text,
+        nullable=True,
     )
