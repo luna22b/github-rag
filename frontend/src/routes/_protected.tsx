@@ -1,5 +1,6 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import axios from "axios";
+import Sidebar from "@/components/Sidebar";
 
 export const Route = createFileRoute("/_protected")({
   beforeLoad: async () => {
@@ -22,5 +23,13 @@ export const Route = createFileRoute("/_protected")({
 });
 
 function ProtectedLayout() {
-  return <Outlet />;
+  return (
+    <div className="min-h-screen bg-zinc-950">
+      <Sidebar />
+
+      <main className="ml-64 min-h-screen">
+        <Outlet />
+      </main>
+    </div>
+  );
 }
