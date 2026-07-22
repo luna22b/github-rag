@@ -1,12 +1,18 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.sessions import SessionMiddleware
 
+from app.core.config import settings
 from app.database.database import engine, Base
-from app.routes import users
+from app.auth.router import router as auth_router
 
 
 app = FastAPI()
 
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=settings.SECRET_KEY,
+)
 
 origins = [
     "http://localhost.tiangolo.com",
@@ -27,8 +33,8 @@ app.add_middleware(
 
 
 app.include_router(
-    users.router,
-    prefix="/api",
+    auth_router,
+    prefix="/api/auth",
     tags=["Users"]
 )
 
