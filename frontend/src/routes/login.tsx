@@ -1,8 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Github } from "lucide-react";
+
 import { useState } from "react";
 import axios from "axios";
 import { useQueryClient } from "@tanstack/react-query";
+
+import GithubLoginButton from "@/components/GithubLoginButton";
 
 export const Route = createFileRoute("/login")({
   component: RouteComponent,
@@ -28,7 +30,7 @@ function RouteComponent() {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/login",
+        "http://localhost:8000/api/auth/login",
         {
           identifier,
           password,
@@ -70,13 +72,7 @@ function RouteComponent() {
         </div>
 
         <div className="mt-8 rounded-xl border border-[oklch(0.27_0.005_285)] bg-white/5 p-6">
-          <button
-            type="button"
-            className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md border border-[oklch(0.27_0.005_285)] bg-black px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-neutral-900"
-          >
-            <Github className="h-4 w-4" />
-            Continue with GitHub
-          </button>
+          <GithubLoginButton />
 
           <div className="my-6 flex items-center">
             <div className="h-px flex-1 bg-[oklch(0.27_0.005_285)]" />
@@ -144,7 +140,11 @@ function RouteComponent() {
           Don't have an account?{" "}
           <span
             className="cursor-pointer text-[oklch(0.62_0.19_255)] transition hover:underline"
-            onClick={() => navigate({ to: "/signup" })}
+            onClick={() =>
+              navigate({
+                to: "/signup",
+              })
+            }
           >
             Create one
           </span>
