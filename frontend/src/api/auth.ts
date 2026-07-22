@@ -2,7 +2,7 @@ import axios from "axios";
 
 export async function getCurrentUser() {
   try {
-    const response = await axios.get("http://localhost:8000/api/me", {
+    const response = await axios.get("http://localhost:8000/api/auth/me", {
       withCredentials: true,
     });
 
@@ -15,7 +15,7 @@ export async function getCurrentUser() {
 export async function logoutUser() {
   try {
     await axios.post(
-      "http://localhost:8000/api/logout",
+      "http://localhost:8000/api/auth/logout",
       {},
       {
         withCredentials: true,
