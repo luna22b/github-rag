@@ -8,10 +8,8 @@ function RouteComponent() {
   const { user } = Route.useRouteContext() as { user: { username: string } };
 
   return (
-    <div>
-      <h1 className="text-white">Hello {user.username}</h1>
-
-      <p className="text-white">You are authenticated.</p>
+    <div className="flex bg-[#09090B]">
+      <main className="flex-1"></main>
     </div>
   );
 }
