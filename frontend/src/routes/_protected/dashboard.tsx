@@ -8,9 +8,5 @@ export const Route = createFileRoute("/_protected/dashboard")({
 function RouteComponent() {
   const { user } = Route.useRouteContext() as { user: { username: string } };
 
-  return (
-    <div className="flex bg-[#09090B]">
-      <Sidebar />
-    </div>
-  );
+  return <div className="flex bg-[#09090B]"></div>;
 }
