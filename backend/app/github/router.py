@@ -18,3 +18,26 @@ async def get_repositories(
         db=db,
         user=user,
     )
+
+
+@router.post("/sync/repos", response_model=list[RepositoryResponse])
+async def sync_repositories(
+    user: User = Depends(authenticate_user),
+    db: Session = Depends(get_db),
+):
+    return await services.sync_repositories(
+        db=db,
+        user=user,
+    )
+
+@router.post("/repositories/repos/{repository_id}/import")
+async def import_repository(
+    repository_id: int,
+    user: User = Depends(authenticate_user),
+    db: Session = Depends(get_db),
+):
+    return await services.import_repository(
+        db=db,
+        user=user,
+        repository_id=repository_id,
+    )
