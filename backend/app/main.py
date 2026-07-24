@@ -5,6 +5,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from app.core.config import settings
 from app.database.database import engine, Base
 from app.auth.router import router as auth_router
+from app.github.router import router as github_router
 
 
 app = FastAPI()
@@ -37,6 +38,13 @@ app.include_router(
     prefix="/api/auth",
     tags=["Users"]
 )
+
+app.include_router(
+    github_router,
+    prefix="/api/repositories",
+    tags=["Repositories"]
+)
+
 
 
 @app.get("/")
