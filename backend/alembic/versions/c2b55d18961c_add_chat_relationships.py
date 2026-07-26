@@ -1,8 +1,8 @@
-"""add a string limit
+"""add chat relationships
 
-Revision ID: c0a8bbbdee8e
-Revises: 7f9665680750
-Create Date: 2026-07-21 20:26:27.614129
+Revision ID: c2b55d18961c
+Revises: 8d6d1f6389ae
+Create Date: 2026-07-26 03:41:53.029527
 
 """
 from typing import Sequence, Union
@@ -12,8 +12,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'c0a8bbbdee8e'
-down_revision: Union[str, Sequence[str], None] = '7f9665680750'
+revision: str = 'c2b55d18961c'
+down_revision: Union[str, Sequence[str], None] = '8d6d1f6389ae'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
