@@ -21,7 +21,6 @@ from app.auth.github import oauth
 from app.core.config import settings
 from app.core.encryption import encrypt_token
 
-
 router = APIRouter()
 
 
@@ -39,7 +38,7 @@ def set_auth_cookie(
         key="access_token",
         value=access_token,
         httponly=True,
-        secure=False,  
+        secure=False,
         samesite="lax",
         max_age=60 * 60 * 24 * 7,
     )
@@ -55,11 +54,7 @@ def signup(
     response: Response,
     db: Session = Depends(get_db),
 ):
-    existing_email = (
-        db.query(User)
-        .filter(User.email == user.email)
-        .first()
-    )
+    existing_email = db.query(User).filter(User.email == user.email).first()
 
     if existing_email:
         raise HTTPException(
@@ -67,11 +62,7 @@ def signup(
             detail="Email already exists",
         )
 
-    existing_username = (
-        db.query(User)
-        .filter(User.username == user.username)
-        .first()
-    )
+    existing_username = db.query(User).filter(User.username == user.username).first()
 
     if existing_username:
         raise HTTPException(
@@ -79,9 +70,7 @@ def signup(
             detail="Username already exists",
         )
 
-    hashed_password = hash_password(
-        user.password
-    )
+    hashed_password = hash_password(user.password)
 
     new_user = User(
         username=user.username,
@@ -93,7 +82,6 @@ def signup(
     db.commit()
     db.refresh(new_user)
 
-    # Automatically log user in after signup
     set_auth_cookie(
         response,
         new_user.id,
@@ -138,7 +126,6 @@ def login(
             detail="Invalid email or password",
         )
 
-    # Create JWT cookie
     set_auth_cookie(
         response,
         existing_user.id,
@@ -156,15 +143,13 @@ def get_current_user(
 ):
     return user
 
+
 @router.post("/logout")
 def logout(response: Response):
-    response.delete_cookie(
-        key="access_token"
-    )
+    response.delete_cookie(key="access_token")
 
-    return {
-        "message": "Logged out successfully"
-    }
+    return {"message": "Logged out successfully"}
+
 
 @router.get("/github/login")
 async def github_login(request: Request):
@@ -174,6 +159,7 @@ async def github_login(request: Request):
         request,
         redirect_uri,
     )
+
 
 @router.get("/github/callback")
 async def github_callback(
@@ -188,9 +174,7 @@ async def github_callback(
             detail="Could not validate credentials from GitHub.",
         )
 
-    github_access_token = encrypt_token(
-        token["access_token"]
-    )
+    github_access_token = encrypt_token(token["access_token"])
 
     response = await oauth.github.get(
         "user",
@@ -201,59 +185,34 @@ async def github_callback(
 
     github_id = str(github_user["id"])
     github_login = github_user["login"]
+    email = github_user.get("email") or f"{github_id}@github.com"
 
-    user = (
-        db.query(User)
-        .filter(User.github_id == github_id)
-        .first()
-    )
+    user = db.query(User).filter(User.github_id == github_id).first()
 
     if not user:
-        email = (
-            github_user.get("email")
-            or f"{github_id}@github.com"
-        )
+        user = db.query(User).filter(User.email == email).first()
 
-        user = (
-            db.query(User)
-            .filter(User.email == email)
-            .first()
-        )
-
-        if user:
-            user.github_id = github_id
-            user.github_username = github_login
-
-        else:
+        if not user:
             user = User(
                 username=github_login,
                 email=email,
-                github_id=github_id,
-                github_username=github_login,
             )
-
             db.add(user)
 
+    user.github_id = github_id
+    user.github_username = github_login
     user.github_access_token = github_access_token
 
     try:
         db.commit()
         db.refresh(user)
-
     except Exception:
         db.rollback()
         raise
 
+    access_token = create_access_token({"sub": str(user.id)})
 
-    access_token = create_access_token(
-        {
-            "sub": str(user.id)
-        }
-    )
-
-    redirect = RedirectResponse(
-        url=f"{settings.FRONTEND_URL}/dashboard"
-    )
+    redirect = RedirectResponse(url=f"{settings.FRONTEND_URL}/repositories")
 
     redirect.set_cookie(
         key="access_token",
@@ -265,3 +224,16 @@ async def github_callback(
     )
 
     return redirect
+
+@router.delete("/github/disconnect")
+async def disconnect_github(
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    user.github_id = None
+    user.github_username = None
+    user.github_access_token = None
+
+    db.commit()
+
+    return {"message": "GitHub disconnected"}
