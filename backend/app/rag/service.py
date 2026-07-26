@@ -1,17 +1,38 @@
-async def index_repository(
+from app.rag.chunker import chunk_text
+from app.rag.embeddings import create_embeddings
+from app.database.models import CodeChunk
+from app.rag.delete_chunks import delete_file_chunks
+
+
+async def index_file(
     db,
     repository,
-    files,
+    file,
 ):
-    print(
-        f"Indexing {len(files)} files for {repository.name}"
+    print("INDEXING FILE:", file.path)
+
+    delete_file_chunks(
+        db,
+        file.id,
     )
 
-    for file in files:
-        print(
-            f"Indexing file: {file.path}"
+    chunks = chunk_text(file.content)
+
+    print("CHUNKS CREATED:", len(chunks))
+
+    embeddings = create_embeddings(chunks)
+
+    print("EMBEDDINGS CREATED:", len(embeddings))
+
+    for index, (chunk, embedding) in enumerate(zip(chunks, embeddings)):
+        code_chunk = CodeChunk(
+            repository_id=repository.id,
+            repository_file_id=file.id,
+            content=chunk,
+            embedding=embedding,
+            chunk_index=index,
         )
 
-    return {
-        "indexed": len(files)
-    }
+        db.add(code_chunk)
+
+    db.commit()
