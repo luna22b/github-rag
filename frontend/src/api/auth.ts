@@ -7,24 +7,17 @@ export async function getCurrentUser() {
     });
 
     return response.data;
-  } catch (error) {
+  } catch {
     return null;
   }
 }
 
 export async function logoutUser() {
-  try {
-    await axios.post(
-      "http://localhost:8000/api/auth/logout",
-      {},
-      {
-        withCredentials: true,
-      },
-    );
-
-    return true;
-  } catch (error) {
-    console.error(error);
-    return false;
-  }
+  await axios.post(
+    "http://localhost:8000/api/auth/logout",
+    {},
+    {
+      withCredentials: true,
+    },
+  );
 }
