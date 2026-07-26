@@ -20,8 +20,8 @@ __pycache__/
 *$py.class
 
 venv/
-env/
-env.docker/
+backend/.env
+backend/.env.docker
 
 *.db
 
