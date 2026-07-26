@@ -13,10 +13,9 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProtectedRouteImport } from './routes/_protected'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as SignupRouteImport } from './routes/signup'
-import { Route as ProtectedChatHistoryRouteImport } from './routes/_protected/chat-history'
-import { Route as ProtectedDashboardRouteImport } from './routes/_protected/dashboard'
-import { Route as ProtectedRepositoriesRouteImport } from './routes/_protected/repositories'
 import { Route as ProtectedSettingsRouteImport } from './routes/_protected/settings'
+import { Route as ProtectedRepositoriesIndexRouteImport } from './routes/_protected/repositories/index'
+import { Route as ProtectedRepositoriesRepositoryIdChatRouteImport } from './routes/_protected/repositories/$repositoryId/chat'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -37,44 +36,39 @@ const SignupRoute = SignupRouteImport.update({
   path: '/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProtectedChatHistoryRoute = ProtectedChatHistoryRouteImport.update({
-  id: '/chat-history',
-  path: '/chat-history',
-  getParentRoute: () => ProtectedRoute,
-} as any)
-const ProtectedDashboardRoute = ProtectedDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => ProtectedRoute,
-} as any)
-const ProtectedRepositoriesRoute = ProtectedRepositoriesRouteImport.update({
-  id: '/repositories',
-  path: '/repositories',
-  getParentRoute: () => ProtectedRoute,
-} as any)
 const ProtectedSettingsRoute = ProtectedSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
   getParentRoute: () => ProtectedRoute,
 } as any)
+const ProtectedRepositoriesIndexRoute =
+  ProtectedRepositoriesIndexRouteImport.update({
+    id: '/repositories/',
+    path: '/repositories/',
+    getParentRoute: () => ProtectedRoute,
+  } as any)
+const ProtectedRepositoriesRepositoryIdChatRoute =
+  ProtectedRepositoriesRepositoryIdChatRouteImport.update({
+    id: '/repositories/$repositoryId/chat',
+    path: '/repositories/$repositoryId/chat',
+    getParentRoute: () => ProtectedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
-  '/chat-history': typeof ProtectedChatHistoryRoute
-  '/dashboard': typeof ProtectedDashboardRoute
-  '/repositories': typeof ProtectedRepositoriesRoute
   '/settings': typeof ProtectedSettingsRoute
+  '/repositories/': typeof ProtectedRepositoriesIndexRoute
+  '/repositories/$repositoryId/chat': typeof ProtectedRepositoriesRepositoryIdChatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
-  '/chat-history': typeof ProtectedChatHistoryRoute
-  '/dashboard': typeof ProtectedDashboardRoute
-  '/repositories': typeof ProtectedRepositoriesRoute
   '/settings': typeof ProtectedSettingsRoute
+  '/repositories': typeof ProtectedRepositoriesIndexRoute
+  '/repositories/$repositoryId/chat': typeof ProtectedRepositoriesRepositoryIdChatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -82,10 +76,9 @@ export interface FileRoutesById {
   '/_protected': typeof ProtectedRouteWithChildren
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
-  '/_protected/chat-history': typeof ProtectedChatHistoryRoute
-  '/_protected/dashboard': typeof ProtectedDashboardRoute
-  '/_protected/repositories': typeof ProtectedRepositoriesRoute
   '/_protected/settings': typeof ProtectedSettingsRoute
+  '/_protected/repositories/': typeof ProtectedRepositoriesIndexRoute
+  '/_protected/repositories/$repositoryId/chat': typeof ProtectedRepositoriesRepositoryIdChatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -93,29 +86,26 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/signup'
-    | '/chat-history'
-    | '/dashboard'
-    | '/repositories'
     | '/settings'
+    | '/repositories/'
+    | '/repositories/$repositoryId/chat'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/login'
     | '/signup'
-    | '/chat-history'
-    | '/dashboard'
-    | '/repositories'
     | '/settings'
+    | '/repositories'
+    | '/repositories/$repositoryId/chat'
   id:
     | '__root__'
     | '/'
     | '/_protected'
     | '/login'
     | '/signup'
-    | '/_protected/chat-history'
-    | '/_protected/dashboard'
-    | '/_protected/repositories'
     | '/_protected/settings'
+    | '/_protected/repositories/'
+    | '/_protected/repositories/$repositoryId/chat'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -155,27 +145,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignupRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_protected/chat-history': {
-      id: '/_protected/chat-history'
-      path: '/chat-history'
-      fullPath: '/chat-history'
-      preLoaderRoute: typeof ProtectedChatHistoryRouteImport
-      parentRoute: typeof ProtectedRoute
-    }
-    '/_protected/dashboard': {
-      id: '/_protected/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof ProtectedDashboardRouteImport
-      parentRoute: typeof ProtectedRoute
-    }
-    '/_protected/repositories': {
-      id: '/_protected/repositories'
-      path: '/repositories'
-      fullPath: '/repositories'
-      preLoaderRoute: typeof ProtectedRepositoriesRouteImport
-      parentRoute: typeof ProtectedRoute
-    }
     '/_protected/settings': {
       id: '/_protected/settings'
       path: '/settings'
@@ -183,21 +152,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedSettingsRouteImport
       parentRoute: typeof ProtectedRoute
     }
+    '/_protected/repositories/': {
+      id: '/_protected/repositories/'
+      path: '/repositories'
+      fullPath: '/repositories/'
+      preLoaderRoute: typeof ProtectedRepositoriesIndexRouteImport
+      parentRoute: typeof ProtectedRoute
+    }
+    '/_protected/repositories/$repositoryId/chat': {
+      id: '/_protected/repositories/$repositoryId/chat'
+      path: '/repositories/$repositoryId/chat'
+      fullPath: '/repositories/$repositoryId/chat'
+      preLoaderRoute: typeof ProtectedRepositoriesRepositoryIdChatRouteImport
+      parentRoute: typeof ProtectedRoute
+    }
   }
 }
 
 interface ProtectedRouteChildren {
-  ProtectedChatHistoryRoute: typeof ProtectedChatHistoryRoute
-  ProtectedDashboardRoute: typeof ProtectedDashboardRoute
-  ProtectedRepositoriesRoute: typeof ProtectedRepositoriesRoute
   ProtectedSettingsRoute: typeof ProtectedSettingsRoute
+  ProtectedRepositoriesIndexRoute: typeof ProtectedRepositoriesIndexRoute
+  ProtectedRepositoriesRepositoryIdChatRoute: typeof ProtectedRepositoriesRepositoryIdChatRoute
 }
 
 const ProtectedRouteChildren: ProtectedRouteChildren = {
-  ProtectedChatHistoryRoute: ProtectedChatHistoryRoute,
-  ProtectedDashboardRoute: ProtectedDashboardRoute,
-  ProtectedRepositoriesRoute: ProtectedRepositoriesRoute,
   ProtectedSettingsRoute: ProtectedSettingsRoute,
+  ProtectedRepositoriesIndexRoute: ProtectedRepositoriesIndexRoute,
+  ProtectedRepositoriesRepositoryIdChatRoute:
+    ProtectedRepositoriesRepositoryIdChatRoute,
 }
 
 const ProtectedRouteWithChildren = ProtectedRoute._addFileChildren(
