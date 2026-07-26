@@ -1,5 +1,4 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-
 import { useState } from "react";
 import axios from "axios";
 import { useQueryClient } from "@tanstack/react-query";
@@ -29,7 +28,7 @@ function RouteComponent() {
     }
 
     try {
-      const response = await axios.post(
+      await axios.post(
         "http://localhost:8000/api/auth/login",
         {
           identifier,
@@ -40,14 +39,12 @@ function RouteComponent() {
         },
       );
 
-      console.log(response.data);
-
       await queryClient.invalidateQueries({
         queryKey: ["currentUser"],
       });
 
       navigate({
-        to: "/dashboard",
+        to: "/repositories",
       });
     } catch (error: any) {
       if (error.response?.status === 401) {
@@ -61,7 +58,7 @@ function RouteComponent() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-6">
+    <div className="flex min-h-[calc(100vh-3.5rem)] items-center justify-center px-6 pb-24">
       <div className="w-full max-w-sm">
         <div className="text-center">
           <h1 className="text-3xl font-bold text-white">Welcome back</h1>
@@ -71,7 +68,7 @@ function RouteComponent() {
           </p>
         </div>
 
-        <div className="mt-8 rounded-xl border border-[oklch(0.27_0.005_285)] bg-white/5 p-6">
+        <div className="mt-6 rounded-xl border border-[oklch(0.27_0.005_285)] bg-white/5 p-6">
           <GithubLoginButton />
 
           <div className="my-6 flex items-center">

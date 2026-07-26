@@ -46,7 +46,7 @@ function RouteComponent() {
       });
 
       navigate({
-        to: "/dashboard",
+        to: "/repositories",
       });
     } catch (error: any) {
       if (error.response?.status === 400) {
@@ -60,7 +60,7 @@ function RouteComponent() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-6">
+    <div className="flex min-h-[calc(100vh-3.5rem)] items-center justify-center px-6 pb-24">
       <div className="w-full max-w-sm">
         <div className="text-center">
           <h1 className="text-3xl font-bold text-white">Create your account</h1>
@@ -70,7 +70,7 @@ function RouteComponent() {
           </p>
         </div>
 
-        <div className="mt-8 rounded-xl border border-[oklch(0.27_0.005_285)] bg-white/5 p-6">
+        <div className="mt-6 rounded-xl border border-[oklch(0.27_0.005_285)] bg-white/5 p-6">
           <GithubLoginButton />
 
           <div className="my-6 flex items-center">
