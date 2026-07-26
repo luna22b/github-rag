@@ -1,9 +1,11 @@
 from pydantic import BaseModel, EmailStr
 
+
 class SignupRequest(BaseModel):
     username: str
     email: str
     password: str
+
 
 class UserResponse(BaseModel):
     id: int
@@ -13,6 +15,7 @@ class UserResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
 
 class LoginRequest(BaseModel):
     identifier: str
