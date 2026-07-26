@@ -25,7 +25,7 @@ export async function syncRepositories() {
 
 export async function importRepository(repositoryId: number) {
   await axios.post(
-    `http://localhost:8000/api/repositories/${repositoryId}/import`,
+    `http://localhost:8000/api/repositories/repos/${repositoryId}/import`,
     {},
     {
       withCredentials: true,
