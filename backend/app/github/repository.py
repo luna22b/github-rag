@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from app.database.models import Repository
+from app.database.models import Repository, RepositoryFile
 
 
 def get_by_user_id(
@@ -15,6 +15,7 @@ def get_by_user_id(
         )
         .all()
     )
+
 
 def get_by_id(
     db: Session,
@@ -32,6 +33,17 @@ def get_by_id(
     )
 
 
+def get_files(
+    db: Session,
+    repository_id: int,
+):
+    return (
+        db.query(RepositoryFile)
+        .filter(RepositoryFile.repository_id == repository_id)
+        .all()
+    )
+
+
 def sync_repositories(
     db: Session,
     user_id: int,
@@ -39,9 +51,7 @@ def sync_repositories(
 ):
     existing_repos = {
         repo.github_repo_id: repo
-        for repo in db.query(Repository)
-        .filter(Repository.user_id == user_id)
-        .all()
+        for repo in db.query(Repository).filter(Repository.user_id == user_id).all()
     }
 
     github_repo_ids = set()
