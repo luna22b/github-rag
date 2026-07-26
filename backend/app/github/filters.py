@@ -22,6 +22,7 @@ IGNORED_EXTENSIONS = {
     ".exe",
 }
 
+
 def should_ignore_file(path: str):
     parts = path.split("/")
 
