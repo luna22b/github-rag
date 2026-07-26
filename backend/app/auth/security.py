@@ -5,7 +5,6 @@ from pwdlib import PasswordHash
 
 from app.core.config import settings
 
-
 password_hash = PasswordHash.recommended()
 
 
@@ -37,3 +36,5 @@ def create_access_token(data: dict) -> str:
         settings.SECRET_KEY,
         algorithm=settings.ALGORITHM,
     )
+
+
