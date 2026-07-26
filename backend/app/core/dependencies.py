@@ -11,7 +11,7 @@ def authenticate_user(
     request: Request,
     db: Session = Depends(get_db),
 ):
-    
+
     token = request.cookies.get("access_token")
 
     if not token:
@@ -41,18 +41,12 @@ def authenticate_user(
             detail="Invalid token",
         )
 
-    user = (
-        db.query(User)
-        .filter(User.id == int(user_id))
-        .first()
-    )
+    user = db.query(User).filter(User.id == int(user_id)).first()
 
     if user is None:
         raise HTTPException(
             status_code=404,
             detail="User not found",
         )
-
-    
 
     return user
