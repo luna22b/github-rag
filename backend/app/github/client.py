@@ -1,7 +1,6 @@
 import base64
 import httpx
 
-
 GITHUB_API = "https://api.github.com"
 
 
@@ -61,6 +60,4 @@ async def get_blob(
 
     data = response.json()
 
-    return base64.b64decode(
-        data["content"]
-    ).decode("utf-8")
+    return base64.b64decode(data["content"]).decode("utf-8")
