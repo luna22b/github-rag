@@ -32,16 +32,17 @@ services:
 
     depends_on:
       - postgres
+      - ollama
 
   postgres:
-    image: postgres:16
+    image: pgvector/pgvector:pg16
 
     container_name: postgres_database
 
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: myapp
+      POSTGRES_DB: github_rag
 
     ports:
       - "5432:5432"
@@ -49,5 +50,17 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  ollama:
+    image: ollama/ollama
+
+    container_name: ollama
+
+    ports:
+      - "11434:11434"
+
+    volumes:
+      - ollama_data:/root/.ollama
+
 volumes:
   postgres_data:
+  ollama_data:
