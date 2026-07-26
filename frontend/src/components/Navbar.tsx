@@ -15,7 +15,7 @@ export default function Navbar() {
     try {
       await logoutUser();
 
-      queryClient.clear();
+      queryClient.setQueryData(["currentUser"], null);
 
       navigate({
         to: "/",
