@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Search, RefreshCcw, Github } from "lucide-react";
+import { Search, RefreshCcw, Github, LoaderCircle } from "lucide-react";
 import { useState } from "react";
 
 import {
@@ -18,6 +18,7 @@ function RouteComponent() {
 
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("All");
+  const [importingId, setImportingId] = useState<number | null>(null);
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -40,13 +41,14 @@ function RouteComponent() {
         queryKey: ["repositories"],
       });
     },
-    onError: (error) => {
-      console.error("SYNC FAILED:", error);
-    },
   });
 
   async function handleRepositoryClick(repositoryId: number) {
+    if (importingId) return;
+
     try {
+      setImportingId(repositoryId);
+
       await importRepository(repositoryId);
 
       navigate({
@@ -57,6 +59,8 @@ function RouteComponent() {
       });
     } catch (error) {
       console.error("IMPORT FAILED:", error);
+    } finally {
+      setImportingId(null);
     }
   }
 
@@ -74,85 +78,50 @@ function RouteComponent() {
   });
 
   return (
-    <div className="min-h-screen bg-zinc-950 px-4 py-8 text-white sm:px-6">
+    <div className="min-h-screen bg-black px-4 py-10 text-white sm:px-6">
       <div className="mx-auto max-w-7xl">
         <div>
-          <h1 className="text-2xl font-semibold">Repositories</h1>
+          <h1 className="text-3xl font-semibold tracking-tight">
+            Repositories
+          </h1>
 
           <p className="mt-2 text-sm text-zinc-400">
-            Select a repository to explore and chat with your codebase.
+            Explore your GitHub repositories and chat with your codebase.
           </p>
         </div>
 
         {!githubConnected ? (
-          <div
-            className="
-              mt-8
-              flex h-64
-              items-center justify-center
-              rounded-xl
-              border border-dashed border-zinc-800
-              bg-zinc-900/30
-            "
-          >
+          <div className="mt-8 flex h-64 items-center justify-center rounded-2xl border border-dashed border-zinc-800 bg-zinc-900/30">
             <div className="text-center">
-              <Github size={32} className="mx-auto text-zinc-600" />
+              <Github size={36} className="mx-auto text-zinc-600" />
 
-              <p className="mt-3 text-sm text-zinc-300">
+              <p className="mt-4 text-sm text-zinc-300">
                 GitHub is disconnected
               </p>
 
               <p className="mt-1 text-xs text-zinc-500">
-                Reconnect GitHub to sync your repositories.
+                Reconnect GitHub to sync repositories.
               </p>
             </div>
           </div>
         ) : (
           <>
             <div className="mt-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-              <div
-                className="
-                  flex w-full items-center gap-3
-                  rounded-lg
-                  border border-zinc-800
-                  bg-zinc-900/60
-                  px-4 py-2.5
-                  lg:max-w-2xl
-                "
-              >
-                <Search size={17} className="text-zinc-500" />
+              <div className="flex w-full items-center gap-3 rounded-xl border border-zinc-800 bg-zinc-900/50 px-4 py-3 lg:max-w-2xl">
+                <Search size={18} className="text-zinc-500" />
 
                 <input
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Search repositories..."
-                  className="
-                    w-full
-                    bg-transparent
-                    text-sm
-                    outline-none
-                    placeholder:text-zinc-600
-                  "
+                  className="w-full bg-transparent text-sm outline-none placeholder:text-zinc-600"
                 />
               </div>
 
               <button
                 onClick={() => syncMutation.mutate()}
                 disabled={syncMutation.isPending}
-                className="
-                  flex items-center justify-center gap-2
-                  rounded-lg
-                  border border-zinc-800
-                  bg-zinc-900/60
-                  px-4 py-2.5
-                  text-sm
-                  text-zinc-300
-                  transition
-                  hover:bg-zinc-800
-                  hover:text-white
-                  disabled:cursor-not-allowed
-                  disabled:opacity-50
-                "
+                className="flex items-center justify-center gap-2 rounded-xl border border-zinc-800 bg-zinc-900 px-5 py-3 text-sm text-zinc-300 transition hover:bg-zinc-800 hover:text-white disabled:opacity-50"
               >
                 <RefreshCcw
                   size={16}
@@ -168,17 +137,11 @@ function RouteComponent() {
                 <button
                   key={item}
                   onClick={() => setFilter(item)}
-                  className={`
-                    rounded-lg
-                    px-4 py-2
-                    text-sm
-                    transition
-                    ${
-                      filter === item
-                        ? "bg-[oklch(0.62_0.19_255)]/15 text-white"
-                        : "text-zinc-400 hover:text-white"
-                    }
-                  `}
+                  className={`rounded-full px-4 py-2 text-sm transition ${
+                    filter === item
+                      ? "bg-white text-black"
+                      : "text-zinc-400 hover:text-white"
+                  }`}
                 >
                   {item}
                 </button>
@@ -190,9 +153,9 @@ function RouteComponent() {
             </div>
 
             {isLoading && (
-              <p className="mt-6 text-sm text-zinc-400">
-                Loading repositories...
-              </p>
+              <div className="mt-10 flex items-center justify-center">
+                <LoaderCircle className="animate-spin text-zinc-400" />
+              </div>
             )}
 
             {error && (
@@ -202,69 +165,66 @@ function RouteComponent() {
             )}
 
             {!isLoading && filteredRepositories.length > 0 && (
-              <div className="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-                {filteredRepositories.map((repo: any) => (
-                  <div
-                    key={repo.id}
-                    onClick={() => handleRepositoryClick(repo.id)}
-                    className="
-                      group
-                      cursor-pointer
-                      rounded-xl
-                      border border-zinc-800
-                      bg-zinc-900/40
-                      p-5
-                      transition
-                      hover:border-zinc-700
-                      hover:bg-zinc-900
-                    "
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="rounded-lg bg-zinc-800 p-2">
-                          <Github size={17} />
+              <div className="mt-8 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                {filteredRepositories.map((repo: any) => {
+                  const importing = importingId === repo.id;
+
+                  return (
+                    <button
+                      key={repo.id}
+                      disabled={Boolean(importingId)}
+                      onClick={() => handleRepositoryClick(repo.id)}
+                      className={`group text-left rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6 transition ${
+                        importing
+                          ? "cursor-wait border-zinc-700"
+                          : "hover:-translate-y-1 hover:border-zinc-700 hover:bg-zinc-900"
+                      } disabled:opacity-70`}
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="rounded-xl bg-zinc-800 p-3">
+                            <Github size={18} />
+                          </div>
+
+                          <h2 className="font-medium">{repo.name}</h2>
                         </div>
 
-                        <h2 className="font-medium">{repo.name}</h2>
+                        <span className="rounded-full bg-zinc-800 px-3 py-1 text-xs text-zinc-400">
+                          {repo.private ? "Private" : "Public"}
+                        </span>
                       </div>
 
-                      <span className="rounded-full bg-zinc-800 px-3 py-1 text-xs text-zinc-400">
-                        {repo.private ? "Private" : "Public"}
-                      </span>
-                    </div>
+                      <p className="mt-5 line-clamp-2 text-sm text-zinc-400">
+                        {repo.description ?? "No description provided"}
+                      </p>
 
-                    <p className="mt-4 line-clamp-2 text-sm text-zinc-400">
-                      {repo.description ?? "No description provided"}
-                    </p>
-
-                    <div className="mt-5 text-xs text-zinc-500 transition group-hover:text-zinc-300">
-                      Open repository →
-                    </div>
-                  </div>
-                ))}
+                      <div className="mt-6 flex items-center gap-2 text-xs text-zinc-500">
+                        {importing ? (
+                          <>
+                            <LoaderCircle size={14} className="animate-spin" />
+                            Importing codebase...
+                          </>
+                        ) : (
+                          <>Open repository →</>
+                        )}
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
             )}
 
             {!isLoading && filteredRepositories.length === 0 && (
-              <div
-                className="
-                  mt-6
-                  flex h-64
-                  items-center justify-center
-                  rounded-xl
-                  border border-dashed border-zinc-800
-                  bg-zinc-900/30
-                "
-              >
+              <div className="mt-8 flex h-64 items-center justify-center rounded-2xl border border-dashed border-zinc-800 bg-zinc-900/30">
                 <div className="text-center">
-                  <Github size={32} className="mx-auto text-zinc-600" />
+                  <Github size={36} className="mx-auto text-zinc-600" />
 
-                  <p className="mt-3 text-sm text-zinc-300">
+                  <p className="mt-4 text-sm text-zinc-300">
                     No repositories found
                   </p>
 
                   <p className="mt-1 text-xs text-zinc-500">
-                    Sync your GitHub account to import repositories.
+                    Sync GitHub to import repositories.
                   </p>
                 </div>
               </div>

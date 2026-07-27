@@ -38,7 +38,7 @@ export default function Navbar() {
           className="cursor-pointer font-semibold text-white"
           onClick={handleLogoClick}
         >
-          MD
+          Astro
         </p>
 
         <div className="flex items-center gap-6 text-sm">

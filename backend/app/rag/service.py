@@ -17,7 +17,7 @@ async def index_file(
 
     chunks = chunk_text(file.content)
 
-    embeddings = create_embeddings(chunks)
+    embeddings = await create_embeddings(chunks)
 
     for index, (chunk, embedding) in enumerate(zip(chunks, embeddings)):
         code_chunk = CodeChunk(

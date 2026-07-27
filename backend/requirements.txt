@@ -20,8 +20,6 @@ authlib
 httpx
 
 langchain-text-splitters
-sentence-transformers
 
-torch
-numpy
 google-genai
+fastembed

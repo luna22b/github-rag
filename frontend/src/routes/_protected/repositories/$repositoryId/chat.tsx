@@ -16,7 +16,7 @@ function RouteComponent() {
   const [chatId, setChatId] = useState<number | null>(null);
 
   return (
-    <div className="min-h-[calc(100vh-3.5rem)] bg-zinc-950 px-4 py-6 text-white sm:px-6">
+    <div className="min-h-[calc(100vh-3.5rem)] bg-black px-4 py-6 text-white sm:px-6">
       <div className="mx-auto flex h-[calc(100vh-6rem)] max-w-7xl overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/40 shadow-xl">
         <aside className="flex w-72 shrink-0 flex-col border-r border-zinc-800 bg-zinc-950/60">
           <div className="border-b border-zinc-800 px-5 py-5">

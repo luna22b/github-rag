@@ -1,21 +1,7 @@
-from sentence_transformers import SentenceTransformer
+from app.rag.embedding_service import embedding_service
 
 
-model = None
+async def create_embeddings(chunks: list[str]):
+    embeddings = await embedding_service.embed_many(chunks)
 
-
-def get_model():
-    global model
-
-    if model is None:
-        model = SentenceTransformer("all-MiniLM-L6-v2")
-
-    return model
-
-
-def create_embeddings(chunks: list[str]):
-    model = get_model()
-
-    embeddings = model.encode(chunks)
-
-    return embeddings.tolist()
+    return embeddings
