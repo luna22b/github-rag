@@ -2,6 +2,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 import Header from "#/components/Header";
 import ButtonsHeader from "#/components/ButtonsHeader";
 import axios from "axios";
+import HowItWorks from "#/components/HowItWorks";
 
 export const Route = createFileRoute("/")({
   beforeLoad: async () => {
@@ -28,6 +29,7 @@ function Home() {
     <div>
       <Header />
       <ButtonsHeader />
+      <HowItWorks />
     </div>
   );
 }
