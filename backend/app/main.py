@@ -20,13 +20,14 @@ app.add_middleware(
 origins = [
     settings.FRONTEND_URL,
     "http://localhost:3000",
+    "https://orbit-rag.onrender.com",
 ]
 
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    
+
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
