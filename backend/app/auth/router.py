@@ -38,9 +38,10 @@ def set_auth_cookie(
         key="access_token",
         value=access_token,
         httponly=True,
-        secure=False,
+        secure=settings.ENVIRONMENT == "production",
         samesite="lax",
         max_age=60 * 60 * 24 * 7,
+        path="/",
     )
 
 
@@ -146,7 +147,10 @@ def get_current_user(
 
 @router.post("/logout")
 def logout(response: Response):
-    response.delete_cookie(key="access_token")
+    response.delete_cookie(
+        key="access_token",
+        path="/",
+    )
 
     return {"message": "Logged out successfully"}
 
@@ -212,7 +216,9 @@ async def github_callback(
 
     access_token = create_access_token({"sub": str(user.id)})
 
-    redirect = RedirectResponse(url=f"{settings.FRONTEND_URL}/repositories")
+    redirect = RedirectResponse(
+        url=f"{settings.FRONTEND_URL}/repositories"
+    )
 
     redirect.set_cookie(
         key="access_token",
@@ -221,9 +227,11 @@ async def github_callback(
         secure=settings.ENVIRONMENT == "production",
         samesite="lax",
         max_age=60 * 60 * 24 * 7,
+        path="/",
     )
 
     return redirect
+
 
 @router.delete("/github/disconnect")
 async def disconnect_github(

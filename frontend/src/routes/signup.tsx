@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import axios from "axios";
 import { useQueryClient } from "@tanstack/react-query";
+import { API_URL } from "#/config";
 
 import GithubLoginButton from "@/components/GithubLoginButton";
 
@@ -30,7 +31,7 @@ function RouteComponent() {
 
     try {
       await axios.post(
-        "http://localhost:8000/api/auth/signup",
+        `${API_URL}/api/auth/signup`,
         {
           username,
           email,

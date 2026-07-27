@@ -29,12 +29,4 @@ async def retrieve_similar_chunks(
 
     results = db.execute(statement).scalars().all()
 
-    print("RESULT COUNT:", len(results))
-
-    for chunk in results:
-        print("----------------")
-        print("DISTANCE:", distance)
-        print("FILE:", chunk.repository_file.path)
-        print(chunk.content[:200])
-
     return results

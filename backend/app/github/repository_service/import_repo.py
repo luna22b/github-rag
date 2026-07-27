@@ -33,8 +33,6 @@ async def import_repo(
         access_token=access_token,
     )
 
-    print("FILES RETURNED:", len(files))
-
     if files:
         for file in files:
             await service.index_file(

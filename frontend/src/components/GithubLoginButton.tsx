@@ -1,8 +1,9 @@
 import { Github } from "lucide-react";
+import { API_URL } from "#/config";
 
 function GithubLoginButton() {
   const handleGithubLogin = () => {
-    window.location.href = "http://localhost:8000/api/auth/github/login";
+    window.location.href = `${API_URL}/api/auth/github/login`;
   };
 
   return (

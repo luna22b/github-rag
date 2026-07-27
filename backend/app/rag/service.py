@@ -9,7 +9,6 @@ async def index_file(
     repository,
     file,
 ):
-    print("INDEXING FILE:", file.path)
 
     delete_file_chunks(
         db,
@@ -18,11 +17,7 @@ async def index_file(
 
     chunks = chunk_text(file.content)
 
-    print("CHUNKS CREATED:", len(chunks))
-
     embeddings = create_embeddings(chunks)
-
-    print("EMBEDDINGS CREATED:", len(embeddings))
 
     for index, (chunk, embedding) in enumerate(zip(chunks, embeddings)):
         code_chunk = CodeChunk(

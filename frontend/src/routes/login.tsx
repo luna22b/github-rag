@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import axios from "axios";
 import { useQueryClient } from "@tanstack/react-query";
+import { API_URL } from "#/config";
 
 import GithubLoginButton from "@/components/GithubLoginButton";
 
@@ -29,7 +30,7 @@ function RouteComponent() {
 
     try {
       await axios.post(
-        "http://localhost:8000/api/auth/login",
+        `${API_URL}/api/auth/login`,
         {
           identifier,
           password,
@@ -52,8 +53,6 @@ function RouteComponent() {
       } else {
         setError("Something went wrong. Please try again.");
       }
-
-      console.log(error.response?.data);
     }
   };
 

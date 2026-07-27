@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Github } from "lucide-react";
 import axios from "axios";
 import { useQueryClient } from "@tanstack/react-query";
-
+import { API_URL } from "#/config";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 export const Route = createFileRoute("/_protected/settings")({
@@ -23,7 +23,7 @@ function RouteComponent() {
   async function handleGithubAction() {
     if (githubConnected) {
       try {
-        await axios.delete("http://localhost:8000/api/auth/github/disconnect", {
+        await axios.delete(`${API_URL}/api/auth/github/disconnect`, {
           withCredentials: true,
         });
 
@@ -37,7 +37,7 @@ function RouteComponent() {
       return;
     }
 
-    window.location.href = "http://localhost:8000/api/auth/github/login";
+    window.location.href = `${API_URL}/api/auth/github/login`;
   }
 
   return (

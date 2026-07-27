@@ -3,11 +3,12 @@ import Header from "#/components/Header";
 import ButtonsHeader from "#/components/ButtonsHeader";
 import axios from "axios";
 import HowItWorks from "#/components/HowItWorks";
+import { API_URL } from "#/config";
 
 export const Route = createFileRoute("/")({
   beforeLoad: async () => {
     try {
-      await axios.get("http://localhost:8000/api/auth/me", {
+      await axios.get(`${API_URL}/api/auth/me`, {
         withCredentials: true,
       });
 

@@ -1,10 +1,11 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import axios from "axios";
+import { API_URL } from "#/config";
 
 export const Route = createFileRoute("/_protected")({
   beforeLoad: async () => {
     try {
-      const response = await axios.get("http://localhost:8000/api/auth/me", {
+      const response = await axios.get(`${API_URL}/api/auth/me`, {
         withCredentials: true,
       });
 

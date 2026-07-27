@@ -1,8 +1,9 @@
 import axios from "axios";
+import { API_URL } from "#/config";
 
 export async function getCurrentUser() {
   try {
-    const response = await axios.get("http://localhost:8000/api/auth/me", {
+    const response = await axios.get(`${API_URL}/api/auth/me`, {
       withCredentials: true,
     });
 
@@ -14,7 +15,7 @@ export async function getCurrentUser() {
 
 export async function logoutUser() {
   await axios.post(
-    "http://localhost:8000/api/auth/logout",
+    `${API_URL}/api/auth/logout`,
     {},
     {
       withCredentials: true,

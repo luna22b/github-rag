@@ -3,23 +3,22 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 
 from app.core.config import settings
-from app.database.database import engine, Base
 from app.auth.router import router as auth_router
 from app.github.router import router as github_router
 from app.chat.router import router as chat_router
 
+
 app = FastAPI()
+
 
 app.add_middleware(
     SessionMiddleware,
     secret_key=settings.SECRET_KEY,
 )
 
+
 origins = [
-    "http://localhost.tiangolo.com",
-    "https://localhost.tiangolo.com",
-    "http://localhost",
-    "http://localhost:8000",
+    settings.FRONTEND_URL,
     "http://localhost:3000",
 ]
 
@@ -33,13 +32,33 @@ app.add_middleware(
 )
 
 
-app.include_router(auth_router, prefix="/api/auth", tags=["Users"])
+app.include_router(
+    auth_router,
+    prefix="/api/auth",
+    tags=["Users"],
+)
 
-app.include_router(github_router, prefix="/api/repositories", tags=["Repositories"])
+app.include_router(
+    github_router,
+    prefix="/api/repositories",
+    tags=["Repositories"],
+)
 
-app.include_router(chat_router, prefix="/chat", tags=["Chat"])
+app.include_router(
+    chat_router,
+    prefix="/api/chat",
+    tags=["Chat"],
+)
 
 
 @app.get("/")
 def home():
-    return {"message": "GitHub RAG API is running"}
+    return {
+        "message": "GitHub RAG API is running"
+    }
+
+@app.get("/health")
+def health():
+    return {
+        "status": "ok"
+    }
