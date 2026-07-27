@@ -154,7 +154,7 @@ def logout(response: Response):
         samesite="none",
     )
 
-    return {"message": "Logged out successfully"}
+    return {"message": "Logged out"}
 
 
 @router.get("/github/login")
