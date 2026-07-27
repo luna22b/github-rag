@@ -150,6 +150,8 @@ def logout(response: Response):
     response.delete_cookie(
         key="access_token",
         path="/",
+        secure=True,
+        samesite="none",
     )
 
     return {"message": "Logged out successfully"}
