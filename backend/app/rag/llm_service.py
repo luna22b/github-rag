@@ -1,10 +1,14 @@
-import httpx
+from google import genai
+
+from app.core.config import settings
 
 
 class LLMService:
 
     def __init__(self):
-        self.base_url = "http://ollama:11434"
+        self.client = genai.Client(
+            api_key=settings.GEMINI_API_KEY
+        )
 
 
     async def is_repository_question(
@@ -39,24 +43,14 @@ User message:
 {question}
 """
 
+        response = self.client.models.generate_content(
+            model="gemini-flash-latest",
+            contents=prompt,
+        )
 
-        async with httpx.AsyncClient(timeout=60) as client:
+        result = response.text.strip().upper()
 
-            response = await client.post(
-                f"{self.base_url}/api/generate",
-                json={
-                    "model": "llama3.1:8b",
-                    "prompt": prompt,
-                    "stream": False,
-                },
-            )
-
-            response.raise_for_status()
-
-            result = response.json()["response"].strip().upper()
-
-
-            return result.startswith("YES")
+        return result.startswith("YES")
 
 
 
@@ -118,21 +112,12 @@ User:
 """
 
 
-        async with httpx.AsyncClient(timeout=120) as client:
+        response = self.client.models.generate_content(
+            model="gemini-flash-latest",
+            contents=prompt,
+        )
 
-            response = await client.post(
-                f"{self.base_url}/api/generate",
-                json={
-                    "model": "llama3.1:8b",
-                    "prompt": prompt,
-                    "stream": False,
-                },
-            )
-
-
-            response.raise_for_status()
-
-            return response.json()["response"]
+        return response.text
 
 
 
