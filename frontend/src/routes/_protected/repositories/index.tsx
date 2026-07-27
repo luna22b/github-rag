@@ -3,7 +3,11 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Search, RefreshCcw, Github } from "lucide-react";
 import { useState } from "react";
 
-import { getRepositories, syncRepositories } from "@/api/repositories";
+import {
+  getRepositories,
+  syncRepositories,
+  importRepository,
+} from "@/api/repositories";
 
 export const Route = createFileRoute("/_protected/repositories/")({
   component: RouteComponent,
@@ -41,13 +45,19 @@ function RouteComponent() {
     },
   });
 
-  function handleRepositoryClick(repositoryId: number) {
-    navigate({
-      to: "/repositories/$repositoryId/chat",
-      params: {
-        repositoryId: String(repositoryId),
-      },
-    });
+  async function handleRepositoryClick(repositoryId: number) {
+    try {
+      await importRepository(repositoryId);
+
+      navigate({
+        to: "/repositories/$repositoryId/chat",
+        params: {
+          repositoryId: String(repositoryId),
+        },
+      });
+    } catch (error) {
+      console.error("IMPORT FAILED:", error);
+    }
   }
 
   const filteredRepositories = repositories.filter((repo: any) => {
