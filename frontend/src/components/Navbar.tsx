@@ -32,7 +32,7 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="border-b border-zinc-800 bg-zinc-950">
+    <nav className="border-b border-zinc-800 bg-black">
       <div className="flex h-14 max-w-7xl mx-auto items-center justify-between px-6">
         <p
           className="cursor-pointer font-semibold text-white"
