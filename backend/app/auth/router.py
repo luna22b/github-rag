@@ -39,7 +39,7 @@ def set_auth_cookie(
         value=access_token,
         httponly=True,
         secure=settings.ENVIRONMENT == "production",
-        samesite="lax",
+        samesite="none",
         max_age=60 * 60 * 24 * 7,
         path="/",
     )
@@ -225,7 +225,7 @@ async def github_callback(
         value=access_token,
         httponly=True,
         secure=settings.ENVIRONMENT == "production",
-        samesite="lax",
+        samesite="none",
         max_age=60 * 60 * 24 * 7,
         path="/",
     )
